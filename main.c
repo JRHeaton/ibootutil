@@ -86,6 +86,7 @@ iBootUSBConnection iDevice_open(uint32_t productID) {
 
 void iDevice_close(iBootUSBConnection connection) {
 	if(connection != NULL) {
+		printf("Closing connection...\n");
 		if(connection->usbService) IOObjectRelease(connection->usbService);
 		if(connection->deviceInterface) (*connection->deviceInterface)->Release(connection->deviceInterface);
 		if(connection->name) CFRelease(connection->name);
@@ -122,6 +123,22 @@ int iDevice_send_command(iBootUSBConnection connection, const char *command) {
 	}
 	
 	return 0;
+}
+
+int iDevice_send_file(iBootUSBConnection connection, unsigned char *data) {
+	if(connection == NULL || data == NULL)
+		return -1;
+	
+	
+}
+
+void iDevice_reset(iBootUSBConnection connection) {
+	if(connection == NULL) 
+		return;
+	
+	(*connection->deviceInterface)->ResetDevice(connection->deviceInterface);
+	iDevice_close(connection);
+	exit(0);
 }
 
 int main (int argc, const char * argv[]) {
