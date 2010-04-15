@@ -4,14 +4,19 @@
 #include <IOKit/usb/USBSpec.h>
 #include <IOKit/usb/IOUSBLib.h>
 #include <IOKit/IOCFPlugIn.h>
+#include <sys/stat.h>
 
 #define RECOVERY 0x1281
-#define DFU 0x1222
-#define WTF 0x1227
+#define DFU 0x1227
+
+#define REQUEST_COMMAND 0x40
+#define REQUEST_FILE 0x21
+#define REQUEST_STATUS 0xA1
+#define RESPONSE_PIPE 0x81
 
 struct iBootUSBConnection {
 	io_service_t usbService;
-	IOUSBDeviceInterface **deviceInterface;
+	IOUSBDeviceInterface **deviceHandle;
 	CFStringRef name;
 	CFStringRef serial;
 	unsigned int idProduct;
@@ -41,7 +46,7 @@ iBootUSBConnection iDevice_open(uint32_t productID) {
 	}
 	
 	IOCFPlugInInterface **pluginInterface;
-	IOUSBDeviceInterface **deviceInterface;
+	IOUSBDeviceInterface **deviceHandle;
 	
 	SInt32 score;
 	if(IOCreatePlugInInterfaceForService(service, kIOUSBDeviceUserClientTypeID, kIOCFPlugInInterfaceID, &pluginInterface, &score) != 0) {
@@ -51,7 +56,7 @@ iBootUSBConnection iDevice_open(uint32_t productID) {
 	}
 	
 	if((*pluginInterface)->QueryInterface(pluginInterface, CFUUIDGetUUIDBytes(kIOUSBDeviceInterfaceID),
-										  (LPVOID*)&deviceInterface) != 0) {
+										  (LPVOID*)&deviceHandle) != 0) {
 		printf("Error: couldn't create device interface\n");
 		IOObjectRelease(service);
 		return NULL;
@@ -59,10 +64,10 @@ iBootUSBConnection iDevice_open(uint32_t productID) {
 	
 	(*pluginInterface)->Release(pluginInterface);
 	
-	if((*deviceInterface)->USBDeviceOpen(deviceInterface) != 0) { 
+	if((*deviceHandle)->USBDeviceOpen(deviceHandle) != 0) { 
 		printf("Error: couldn't connect to device\n");
 		IOObjectRelease(service);
-		(*deviceInterface)->Release(deviceInterface);
+		(*deviceHandle)->Release(deviceHandle);
 		return NULL;
 	}
 	
@@ -76,7 +81,7 @@ iBootUSBConnection iDevice_open(uint32_t productID) {
 	memset(connection, '\0', sizeof(struct iBootUSBConnection));
 
 	connection->usbService = service;
-	connection->deviceInterface = deviceInterface;	
+	connection->deviceHandle = deviceHandle;	
 	connection->name = productName;
 	connection->serial = productSerial;
 	connection->idProduct = productID;
@@ -88,7 +93,8 @@ void iDevice_close(iBootUSBConnection connection) {
 	if(connection != NULL) {
 		printf("Closing connection...\n");
 		if(connection->usbService) IOObjectRelease(connection->usbService);
-		if(connection->deviceInterface) (*connection->deviceInterface)->Release(connection->deviceInterface);
+		if(connection->deviceHandle) (*connection->deviceHandle)->USBDeviceClose(connection->deviceHandle);
+		if(connection->deviceHandle) (*connection->deviceHandle)->Release(connection->deviceHandle);
 		if(connection->name) CFRelease(connection->name);
 		if(connection->serial) CFRelease(connection->serial);
 		
@@ -106,11 +112,11 @@ void iDevice_print(iBootUSBConnection connection) {
 }
 
 int iDevice_send_command(iBootUSBConnection connection, const char *command) {
-	if(connection == NULL || command == NULL || connection->idProduct == WTF)
+	if(connection == NULL || command == NULL || connection->idProduct != RECOVERY)
 		return -1;
 	
 	IOUSBDevRequest request;
-	request.bmRequestType = 0x40;
+	request.bmRequestType = REQUEST_COMMAND;
 	request.bRequest = 0x0;
 	request.wValue = 0x0;
 	request.wIndex = 0x0;
@@ -118,37 +124,221 @@ int iDevice_send_command(iBootUSBConnection connection, const char *command) {
 	request.pData = (void *)command;
 	request.wLenDone = 0x0;
 	
-	if((*connection->deviceInterface)->DeviceRequest(connection->deviceInterface, &request) != kIOReturnSuccess) {
+	if((*connection->deviceHandle)->DeviceRequest(connection->deviceHandle, &request) != kIOReturnSuccess) {
+		return -1;
+	} 
+	
+	printf("Sent command: %s\n", command);
+	
+	return 0;
+}
+
+int iDevice_request_status(iBootUSBConnection connection, int flag) {
+	if(connection == NULL)
+		return -1;
+	
+	IOUSBDevRequest status_request;
+	char response[6];
+	
+	status_request.bmRequestType = REQUEST_STATUS;
+	status_request.bRequest = 0x3;
+	status_request.wValue = 0x0;
+	status_request.wIndex = 0x0;
+	status_request.wLength = 0x6;
+	status_request.pData = (void *)response;
+	status_request.wLenDone = 0x0;
+	
+	if((*connection->deviceHandle)->DeviceRequest(connection->deviceHandle, &status_request) != kIOReturnSuccess) {
+		printf("Error: couldn't receive status\n");
+		return -1;
+	}
+	
+	if(response[4] != flag) {
+		printf("Error: invalid status response\n");
 		return -1;
 	}
 	
 	return 0;
 }
 
-int iDevice_send_file(iBootUSBConnection connection, unsigned char *data) {
-	if(connection == NULL || data == NULL)
+int iDevice_send_file(iBootUSBConnection connection, const char *path) {
+	if(connection == NULL || path == NULL)
 		return -1;
 	
+	unsigned char *buf;
+	unsigned int packet_size = 0x800;
+	struct stat check;
 	
+	if(stat(path, &check) != 0) {
+		printf("File doesn't exist: %s\n", path);
+		return -1;
+	}
+	
+	buf = malloc(check.st_size);
+	memset(buf, '\0', check.st_size);
+	
+	FILE *file = fopen(path, "r");
+	if(file == NULL) {
+		printf("Couldn't open file: %s\n", path);
+		return -1;
+	}
+
+	if(fread((void *)buf, check.st_size, 1, file) == 0) {
+		printf("Couldn't create buffer\n");
+		fclose(file);
+		free(buf);
+		return -1;
+	}
+	
+	fclose(file);
+	
+	unsigned int packets, current;
+	packets = (check.st_size / packet_size);
+	if(check.st_size % packet_size) {
+		packets++;
+	}
+	
+	for(current = 0; current < packets; ++current) {
+		int size = (current + 1 < packets ? packet_size : (check.st_size % packet_size));
+		
+		IOUSBDevRequest file_request;
+		
+		file_request.bmRequestType = REQUEST_FILE;
+		file_request.bRequest = 0x1;
+		file_request.wValue = current;
+		file_request.wIndex = 0x0;
+		file_request.wLength = (UInt16)size;
+		file_request.pData = (void *)&buf[current * packet_size];
+		file_request.wLenDone = 0x0;
+		
+		if((*connection->deviceHandle)->DeviceRequest(connection->deviceHandle, &file_request) != kIOReturnSuccess) {
+			printf("Error: couldn't send packet %d\n", current + 1);
+			free(buf);
+			return -1;
+		}
+		
+		if(iDevice_request_status(connection, 5) != 0) {
+			free(buf);
+			return -1;
+		}
+	}
+	
+	IOUSBDevRequest checkup;
+	checkup.bmRequestType = REQUEST_FILE;
+	checkup.bRequest = 0x1;
+	checkup.wValue = current;
+	checkup.wIndex = 0x0;
+	checkup.wLength = 0x0;
+	checkup.pData = buf;
+	checkup.wLenDone = 0x0;
+	
+	(*connection->deviceHandle)->DeviceRequest(connection->deviceHandle, &checkup);
+	
+	for(current = 6; current < 8; ++current) {
+		if(iDevice_request_status(connection, current) != 0) {
+			free(buf);
+			return -1;
+		}
+	}
+	
+	free(buf);
+	
+	return 0;
+}
+
+int iDevice_start_shell(iBootUSBConnection connection, const char *prompt) {
+	if(connection == NULL)
+		return -1;
+	
+	UInt32 buf_size = 0x1000;
+	unsigned char response_buf[buf_size];
+	
+	if((*connection->deviceHandle)->SetConfiguration(connection->deviceHandle, 0x1) != 0) {
+		printf("Couldn't set device configuration\n");
+		return -1;
+	}
+	
+	IOUSBFindInterfaceRequest request;
+	request.bInterfaceClass = kIOUSBFindInterfaceDontCare;
+	request.bInterfaceSubClass = kIOUSBFindInterfaceDontCare;
+	request.bInterfaceProtocol = kIOUSBFindInterfaceDontCare;
+	request.bAlternateSetting = kIOUSBFindInterfaceDontCare;
+	
+	io_iterator_t iterator;
+	
+	if((*connection->deviceHandle)->CreateInterfaceIterator(connection->deviceHandle, &request, &iterator) != 0) {
+		printf("Couldn't create device interface iterator\n");
+		return -1;
+	}
+	
+	IOUSBInterfaceInterface **deviceInterface;
+	
+	io_service_t interface;
+	while(interface = IOIteratorNext(iterator)) {
+		IOCFPlugInInterface **pluginInterface;
+		SInt32 score;
+		if(IOCreatePlugInInterfaceForService(interface, kIOUSBInterfaceUserClientTypeID, kIOCFPlugInInterfaceID, &pluginInterface, &score) != 0) {
+			printf("Couldn't create plugin interface for device\n");
+			IOObjectRelease(interface);
+			IOObjectRelease(iterator);
+			return -1;
+		}
+		
+		if((*pluginInterface)->QueryInterface(pluginInterface, CFUUIDGetUUIDBytes(kIOUSBInterfaceInterfaceID), (LPVOID)&deviceInterface) != 0) {
+			printf("Couldn't retreive device interface\n");
+			IOObjectRelease(interface);
+			IOObjectRelease(iterator);
+			return -1;
+		}
+		
+		(*pluginInterface)->Release(pluginInterface);
+		IOObjectRelease(interface);
+		break;
+	}
+	IOObjectRelease(iterator);
+	
+	if((*deviceInterface)->USBInterfaceOpen(deviceInterface) != 0) {
+		printf("Couldn't claim device interface\n");
+		return -1;
+	}
+	
+	if((*deviceInterface)->SetAlternateInterface(deviceInterface, 0x1) != 0) {
+		printf("Couldn't set device alternate interface\n");
+		return -1;
+	}
+	
+	while(1) {
+		memset(response_buf, '\0', buf_size);
+		if((*deviceInterface)->ReadPipe(connection->deviceHandle, RESPONSE_PIPE, response_buf, &buf_size) != 0) {
+			printf("Error reading response\n");
+		}
+		
+		printf("%s\n", response_buf);
+	}
+	
+	(*deviceInterface)->USBInterfaceClose(deviceInterface);
+	(*deviceInterface)->Release(deviceInterface);
+	   
+	return 0;
 }
 
 void iDevice_reset(iBootUSBConnection connection) {
 	if(connection == NULL) 
 		return;
 	
-	(*connection->deviceInterface)->ResetDevice(connection->deviceInterface);
+	(*connection->deviceHandle)->ResetDevice(connection->deviceHandle);
 	iDevice_close(connection);
 	exit(0);
 }
 
-int main (int argc, const char * argv[]) {
+int main (int argc, const char **argv) {
 	iBootUSBConnection connection = iDevice_open(RECOVERY);
 	if(connection == NULL) {
 		printf("Error: couldn't find device\n");
 	}
 	
 	iDevice_print(connection);
-	iDevice_send_command(connection, "bgcolor 255 12 255");
+	iDevice_start_shell(connection, "iDevice$ ");
 	iDevice_close(connection);
 	
 	return 0;
