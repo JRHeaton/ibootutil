@@ -1,0 +1,89 @@
+Tibootutil
+v7
+r0
+t292986559.357516
+cCheck dependencies
+cCompileC build/ibootutil.build/Debug/ibootutil.build/Objects-normal/x86_64/main.o /Users/John/Desktop/ibootutil/main.c normal x86_64 c com.apple.compilers.gcc.4_2
+
+N/Developer/SDKs/MacOSX10.6.sdk
+c000000004B99A23900000000000000EE
+t1268359737
+s238
+
+N/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/CoreFoundation.framework/Headers/CoreFoundation.h
+c000000004B569ADA0000000000000AF4
+t1263966938
+s2804
+
+N/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/IOKit.framework/Headers/IOCFPlugIn.h
+c000000004B569C0400000000000008FD
+t1263967236
+s2301
+
+N/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/IOKit.framework/Headers/IOKitLib.h
+c000000004B569C040000000000012048
+t1263967236
+s73800
+
+N/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/IOKit.framework/Headers/usb/IOUSBLib.h
+c000000004B448E80000000000002BF93
+t1262784128
+s180115
+
+N/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/IOKit.framework/Headers/usb/USB.h
+c000000004B448E80000000000000B005
+t1262784128
+s45061
+
+N/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/IOKit.framework/Headers/usb/USBSpec.h
+c000000004B448E800000000000003B44
+t1262784128
+s15172
+
+N/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation
+c000000004B739624000000000077CFF0
+t1265866276
+s7852016
+
+N/Users/John/Desktop/ibootutil/build/Debug/ibootutil
+t2
+s0
+
+N/Users/John/Desktop/ibootutil/build/ibootutil.build/Debug/ibootutil.build/Objects-normal/x86_64/ibootutil.LinkFileList
+c000000004BC6673F0000000000000067
+t1271293759
+s103
+
+N/Users/John/Desktop/ibootutil/build/ibootutil.build/Debug/ibootutil.build/Objects-normal/x86_64/main.o
+t2
+s0
+
+N/Users/John/Desktop/ibootutil/main.c
+c000000004BC6673E0000000000000335
+t1271293758
+s821
+i<CoreFoundation/CoreFoundation.h>
+i<IOKit/IOKitLib.h>
+i<IOKit/usb/IOUSBLib.h>
+i<IOKit/IOCFPlugIn.h>
+
+CCheck dependencies
+r0
+lSLF07#2@18"Check dependencies292986559#292986559#0(0"0(0#1#0"4300911832#0"0#
+
+CCompileC build/ibootutil.build/Debug/ibootutil.build/Objects-normal/x86_64/main.o /Users/John/Desktop/ibootutil/main.c normal x86_64 c com.apple.compilers.gcc.4_2
+s292986559.356322
+e292986559.357454
+r0
+xCompileC
+xbuild/ibootutil.build/Debug/ibootutil.build/Objects-normal/x86_64/main.o
+x/Users/John/Desktop/ibootutil/main.c
+xnormal
+xx86_64
+xc
+xcom.apple.compilers.gcc.4_2
+lSLF07#2@44"Compile /Users/John/Desktop/ibootutil/main.c292986559#292986559#0(440"/Users/John/Desktop/ibootutil/main.c:14: warning: useless storage class specifier in empty declaration/Users/John/Desktop/ibootutil/main.c: In function 'main':/Users/John/Desktop/ibootutil/main.c:24: error: 'iterator' undeclared (first use in this function)/Users/John/Desktop/ibootutil/main.c:24: error: (Each undeclared identifier is reported only once/Users/John/Desktop/ibootutil/main.c:24: error: for each function it appears in.)2(22@52"Useless storage class specifier in empty declaration292986559#0#103#0(6@36"/Users/John/Desktop/ibootutil/main.c292986558#14#0#14#0#0"0(4@50"'iterator' undeclared (first use in this function)292986559#161#99#0(6@36"/Users/John/Desktop/ibootutil/main.c292986558#24#0#24#0#43"'*' undeclared (first use in this function)0(0#0#36"/Users/John/Desktop/ibootutil/main.c4300911832#1207"    cd /Users/John/Desktop/ibootutil    setenv LANG en_US.US-ASCII    /Developer/usr/bin/gcc-4.2 -x c -arch x86_64 -fmessage-length=0 -pipe -std=gnu99 -Wno-trigraphs -fpascal-strings -fasm-blocks -O0 -Wreturn-type -Wunused-variable -isysroot /Developer/SDKs/MacOSX10.6.sdk -mfix-and-continue -mmacosx-version-min=10.6 -gdwarf-2 -iquote /Users/John/Desktop/ibootutil/build/ibootutil.build/Debug/ibootutil.build/ibootutil-generated-files.hmap -I/Users/John/Desktop/ibootutil/build/ibootutil.build/Debug/ibootutil.build/ibootutil-own-target-headers.hmap -I/Users/John/Desktop/ibootutil/build/ibootutil.build/Debug/ibootutil.build/ibootutil-all-target-headers.hmap -iquote /Users/John/Desktop/ibootutil/build/ibootutil.build/Debug/ibootutil.build/ibootutil-project-headers.hmap -F/Users/John/Desktop/ibootutil/build/Debug -I/Users/John/Desktop/ibootutil/build/Debug/include -I/Users/John/Desktop/ibootutil/build/ibootutil.build/Debug/ibootutil.build/DerivedSources/x86_64 -I/Users/John/Desktop/ibootutil/build/ibootutil.build/Debug/ibootutil.build/DerivedSources -c /Users/John/Desktop/ibootutil/main.c -o /Users/John/Desktop/ibootutil/build/ibootutil.build/Debug/ibootutil.build/Objects-normal/x86_64/main.o1#
+
+CLd /Users/John/Desktop/ibootutil/build/Debug/ibootutil normal x86_64
+r0
+

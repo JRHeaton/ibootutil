@@ -1,0 +1,649 @@
+// !$*UTF8*$!
+{
+	08FB7793FE84155DC02AAC07 /* Project object */ = {
+		activeBuildConfigurationName = Debug;
+		activeExecutable = 52AB3DA5117698B400A4BCAD /* ibootutil */;
+		activeTarget = 8DD76F740486A8DE00D96B5E /* ibootutil */;
+		breakpoints = (
+		);
+		codeSenseManager = 52AB3DAC117698C200A4BCAD /* Code sense */;
+		executables = (
+			52AB3DA5117698B400A4BCAD /* ibootutil */,
+		);
+		perUserDictionary = {
+			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					741,
+					20,
+					48.16259765625,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXPerProjectTemplateStateSaveDate = 292985012;
+			PBXWorkspaceStateSaveDate = 292985012;
+		};
+		perUserProjectItems = {
+			52AB3DDF1176A57F00A4BCAD /* PBXTextBookmark */ = 52AB3DDF1176A57F00A4BCAD /* PBXTextBookmark */;
+			52AB3DE11176A57F00A4BCAD /* PBXTextBookmark */ = 52AB3DE11176A57F00A4BCAD /* PBXTextBookmark */;
+			52AB3DE31176A57F00A4BCAD /* PBXTextBookmark */ = 52AB3DE31176A57F00A4BCAD /* PBXTextBookmark */;
+			52AB3DE51176A57F00A4BCAD /* PBXTextBookmark */ = 52AB3DE51176A57F00A4BCAD /* PBXTextBookmark */;
+			52AB3DE71176A57F00A4BCAD /* PBXTextBookmark */ = 52AB3DE71176A57F00A4BCAD /* PBXTextBookmark */;
+			52AB3DE91176A57F00A4BCAD /* PBXTextBookmark */ = 52AB3DE91176A57F00A4BCAD /* PBXTextBookmark */;
+			52AB3DEB1176A57F00A4BCAD /* PBXTextBookmark */ = 52AB3DEB1176A57F00A4BCAD /* PBXTextBookmark */;
+			52AB3DED1176A57F00A4BCAD /* PBXTextBookmark */ = 52AB3DED1176A57F00A4BCAD /* PBXTextBookmark */;
+			52AB3DEE1176A57F00A4BCAD /* PBXTextBookmark */ = 52AB3DEE1176A57F00A4BCAD /* PBXTextBookmark */;
+			52AB3DFC1176A58900A4BCAD /* PBXTextBookmark */ = 52AB3DFC1176A58900A4BCAD /* PBXTextBookmark */;
+			52AB3DFD1176A58900A4BCAD /* PBXTextBookmark */ = 52AB3DFD1176A58900A4BCAD /* PBXTextBookmark */;
+			52AB3DFE1176A5B000A4BCAD /* PBXTextBookmark */ = 52AB3DFE1176A5B000A4BCAD /* PBXTextBookmark */;
+			52AB3DFF1176A5B000A4BCAD /* PBXTextBookmark */ = 52AB3DFF1176A5B000A4BCAD /* PBXTextBookmark */;
+			52AB3E021176A5C600A4BCAD /* PBXTextBookmark */ = 52AB3E021176A5C600A4BCAD /* PBXTextBookmark */;
+			52AB3E031176A5DA00A4BCAD /* PBXTextBookmark */ = 52AB3E031176A5DA00A4BCAD /* PBXTextBookmark */;
+			52AB3E041176A5DA00A4BCAD /* PBXTextBookmark */ = 52AB3E041176A5DA00A4BCAD /* PBXTextBookmark */;
+			52AB3E051176A5DA00A4BCAD /* PBXTextBookmark */ = 52AB3E051176A5DA00A4BCAD /* PBXTextBookmark */;
+			52AB3E061176A5F900A4BCAD /* PBXTextBookmark */ = 52AB3E061176A5F900A4BCAD /* PBXTextBookmark */;
+			52AB3E071176A5F900A4BCAD /* PBXTextBookmark */ = 52AB3E071176A5F900A4BCAD /* PBXTextBookmark */;
+			52AB3E081176A5F900A4BCAD /* PBXTextBookmark */ = 52AB3E081176A5F900A4BCAD /* PBXTextBookmark */;
+			52AB3E0D1176A6BD00A4BCAD /* PBXTextBookmark */ = 52AB3E0D1176A6BD00A4BCAD /* PBXTextBookmark */;
+			52AB3E101176A96700A4BCAD /* PBXTextBookmark */ = 52AB3E101176A96700A4BCAD /* PBXTextBookmark */;
+			52AB3E111176A96700A4BCAD /* PBXTextBookmark */ = 52AB3E111176A96700A4BCAD /* PBXTextBookmark */;
+			52AB3E121176A96700A4BCAD /* PBXTextBookmark */ = 52AB3E121176A96700A4BCAD /* PBXTextBookmark */;
+			52AB3E1B1176AB9F00A4BCAD /* PBXTextBookmark */ = 52AB3E1B1176AB9F00A4BCAD /* PBXTextBookmark */;
+			52AB3E1C1176AB9F00A4BCAD /* PBXTextBookmark */ = 52AB3E1C1176AB9F00A4BCAD /* PBXTextBookmark */;
+			52AB3E1D1176AB9F00A4BCAD /* PBXTextBookmark */ = 52AB3E1D1176AB9F00A4BCAD /* PBXTextBookmark */;
+			52AB3E1E1176AB9F00A4BCAD /* PBXTextBookmark */ = 52AB3E1E1176AB9F00A4BCAD /* PBXTextBookmark */;
+			52AB3E1F1176B5C500A4BCAD /* PBXTextBookmark */ = 52AB3E1F1176B5C500A4BCAD /* PBXTextBookmark */;
+			52AB3E221176B66000A4BCAD /* PBXTextBookmark */ = 52AB3E221176B66000A4BCAD /* PBXTextBookmark */;
+			52AB3E231176B69500A4BCAD /* PBXTextBookmark */ = 52AB3E231176B69500A4BCAD /* PBXTextBookmark */;
+			52AB3E241176B6D900A4BCAD /* PBXTextBookmark */ = 52AB3E241176B6D900A4BCAD /* PBXTextBookmark */;
+			52AB3E351176B96F00A4BCAD /* PBXTextBookmark */ = 52AB3E351176B96F00A4BCAD /* PBXTextBookmark */;
+			52AB3E361176B96F00A4BCAD /* PBXTextBookmark */ = 52AB3E361176B96F00A4BCAD /* PBXTextBookmark */;
+			52AB3E371176B96F00A4BCAD /* PBXTextBookmark */ = 52AB3E371176B96F00A4BCAD /* PBXTextBookmark */;
+			52AB3E381176B96F00A4BCAD /* PBXTextBookmark */ = 52AB3E381176B96F00A4BCAD /* PBXTextBookmark */;
+			52AB3E431176BA8800A4BCAD /* PBXTextBookmark */ = 52AB3E431176BA8800A4BCAD /* PBXTextBookmark */;
+			52AB3E4C1176BACF00A4BCAD /* XCBuildMessageTextBookmark */ = 52AB3E4C1176BACF00A4BCAD /* XCBuildMessageTextBookmark */;
+			52AB3E4D1176BACF00A4BCAD /* PBXTextBookmark */ = 52AB3E4D1176BACF00A4BCAD /* PBXTextBookmark */;
+			52AB3E561176BAF800A4BCAD /* PBXTextBookmark */ = 52AB3E561176BAF800A4BCAD /* PBXTextBookmark */;
+			52AB3E571176BAF800A4BCAD /* XCBuildMessageTextBookmark */ = 52AB3E571176BAF800A4BCAD /* XCBuildMessageTextBookmark */;
+			52AB3E581176BAF800A4BCAD /* PBXTextBookmark */ = 52AB3E581176BAF800A4BCAD /* PBXTextBookmark */;
+			52AB3E5B1176BB1200A4BCAD /* PBXTextBookmark */ = 52AB3E5B1176BB1200A4BCAD /* PBXTextBookmark */;
+		};
+		sourceControlManager = 52AB3DAB117698C200A4BCAD /* Source Control */;
+		userBuildSettings = {
+		};
+	};
+	08FB7796FE84155DC02AAC07 /* main.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {919, 2860}}";
+			sepNavSelRange = "{4212, 0}";
+			sepNavVisRange = "{3490, 773}";
+		};
+	};
+	52AB3DA5117698B400A4BCAD /* ibootutil */ = {
+		isa = PBXExecutable;
+		activeArgIndices = (
+		);
+		argumentStrings = (
+		);
+		autoAttachOnCrash = 1;
+		breakpointsEnabled = 0;
+		configStateDict = {
+		};
+		customDataFormattersEnabled = 1;
+		dataTipCustomDataFormattersEnabled = 1;
+		dataTipShowTypeColumn = 1;
+		dataTipSortType = 0;
+		debuggerPlugin = GDBDebugging;
+		disassemblyDisplayState = 0;
+		dylibVariantSuffix = "";
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		executableSystemSymbolLevel = 0;
+		executableUserSymbolLevel = 0;
+		libgmallocEnabled = 0;
+		name = ibootutil;
+		savedGlobals = {
+		};
+		showTypeColumn = 0;
+		sourceDirectories = (
+		);
+		variableFormatDictionary = {
+		};
+	};
+	52AB3DAB117698C200A4BCAD /* Source Control */ = {
+		isa = PBXSourceControlManager;
+		fallbackIsa = XCSourceControlManager;
+		isSCMEnabled = 0;
+		scmConfiguration = {
+			repositoryNamesForRoots = {
+				"" = "";
+			};
+		};
+	};
+	52AB3DAC117698C200A4BCAD /* Code sense */ = {
+		isa = PBXCodeSenseManager;
+		indexTemplatePath = "";
+	};
+	52AB3DDF1176A57F00A4BCAD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 52AB3DE01176A57F00A4BCAD /* USB.h */;
+		name = "USB.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 790;
+		vrLoc = 765;
+	};
+	52AB3DE01176A57F00A4BCAD /* USB.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = USB.h;
+		path = /Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/IOKit.framework/Versions/A/Headers/usb/USB.h;
+		sourceTree = "<absolute>";
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {919, 21940}}";
+			sepNavSelRange = "{30296, 214}";
+			sepNavVisRange = "{29780, 1490}";
+		};
+	};
+	52AB3DE11176A57F00A4BCAD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 52AB3DE21176A57F00A4BCAD /* USBSpec.h */;
+		name = "USBSpec.h: 439";
+		rLen = 12;
+		rLoc = 13753;
+		rType = 0;
+		vrLen = 2137;
+		vrLoc = 12206;
+	};
+	52AB3DE21176A57F00A4BCAD /* USBSpec.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = USBSpec.h;
+		path = /Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/Kernel.framework/Versions/A/Headers/IOKit/usb/USBSpec.h;
+		sourceTree = "<absolute>";
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {902, 8460}}";
+			sepNavSelRange = "{14233, 0}";
+			sepNavVisRange = "{13532, 1545}";
+			sepNavWindowFrame = "{{65, 43}, {961, 718}}";
+		};
+	};
+	52AB3DE31176A57F00A4BCAD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 52AB3DE41176A57F00A4BCAD /* main.c */;
+		name = "main.c: 28";
+		rLen = 544;
+		rLoc = 946;
+		rType = 0;
+		vrLen = 918;
+		vrLoc = 753;
+	};
+	52AB3DE41176A57F00A4BCAD /* main.c */ = {
+		isa = PBXFileReference;
+		name = main.c;
+		path = /Users/John/Desktop/icmd/main.c;
+		sourceTree = "<absolute>";
+	};
+	52AB3DE51176A57F00A4BCAD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 52AB3DE61176A57F00A4BCAD /* IOCFPlugIn.h */;
+		name = "IOCFPlugIn.h: 62";
+		rLen = 16;
+		rLoc = 2040;
+		rType = 0;
+		vrLen = 1007;
+		vrLoc = 1294;
+	};
+	52AB3DE61176A57F00A4BCAD /* IOCFPlugIn.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = IOCFPlugIn.h;
+		path = /Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/IOKit.framework/Versions/A/Headers/IOCFPlugIn.h;
+		sourceTree = "<absolute>";
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {919, 1420}}";
+			sepNavSelRange = "{1984, 56}";
+			sepNavVisRange = "{1294, 1007}";
+		};
+	};
+	52AB3DE71176A57F00A4BCAD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 52AB3DE81176A57F00A4BCAD /* USBPrivateDataSample.c */;
+		name = "USBPrivateDataSample.c: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1565;
+		vrLoc = 8528;
+	};
+	52AB3DE81176A57F00A4BCAD /* USBPrivateDataSample.c */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.c;
+		name = USBPrivateDataSample.c;
+		path = /Users/John/Downloads/USBPrivateDataSample/USBPrivateDataSample.c;
+		sourceTree = "<absolute>";
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {919, 6680}}";
+			sepNavSelRange = "{7787, 33}";
+			sepNavVisRange = "{7502, 1764}";
+		};
+	};
+	52AB3DE91176A57F00A4BCAD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 52AB3DEA1176A57F00A4BCAD /* IOUSBLib.h */;
+		name = "IOUSBLib.h: 2745";
+		rLen = 0;
+		rLoc = 162513;
+		rType = 0;
+		vrLen = 1802;
+		vrLoc = 53537;
+	};
+	52AB3DEA1176A57F00A4BCAD /* IOUSBLib.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = IOUSBLib.h;
+		path = /Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/IOKit.framework/Versions/A/Headers/usb/IOUSBLib.h;
+		sourceTree = "<absolute>";
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {919, 59420}}";
+			sepNavSelRange = "{42314, 16}";
+			sepNavVisRange = "{41620, 1971}";
+			sepNavWindowFrame = "{{15, 55}, {961, 718}}";
+		};
+	};
+	52AB3DEB1176A57F00A4BCAD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 52AB3DEC1176A57F00A4BCAD /* IOKitLib.h */;
+		name = "IOKitLib.h: 1027";
+		rLen = 33;
+		rLoc = 51716;
+		rType = 0;
+		vrLen = 1891;
+		vrLoc = 50831;
+	};
+	52AB3DEC1176A57F00A4BCAD /* IOKitLib.h */ = {
+		isa = PBXFileReference;
+		name = IOKitLib.h;
+		path = /Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/IOKit.framework/Versions/A/Headers/IOKitLib.h;
+		sourceTree = "<absolute>";
+	};
+	52AB3DED1176A57F00A4BCAD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 08FB7796FE84155DC02AAC07 /* main.c */;
+		name = "main.c: 73";
+		rLen = 0;
+		rLoc = 4199;
+		rType = 0;
+		vrLen = 1086;
+		vrLoc = 541;
+	};
+	52AB3DEE1176A57F00A4BCAD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 08FB7796FE84155DC02AAC07 /* main.c */;
+		name = "main.c: 73";
+		rLen = 0;
+		rLoc = 4199;
+		rType = 0;
+		vrLen = 959;
+		vrLoc = 867;
+	};
+	52AB3DFC1176A58900A4BCAD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 08FB7796FE84155DC02AAC07 /* main.c */;
+		name = "main.c: 73";
+		rLen = 0;
+		rLoc = 4199;
+		rType = 0;
+		vrLen = 959;
+		vrLoc = 867;
+	};
+	52AB3DFD1176A58900A4BCAD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 52AB3DE81176A57F00A4BCAD /* USBPrivateDataSample.c */;
+		name = "USBPrivateDataSample.c: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1541;
+		vrLoc = 7167;
+	};
+	52AB3DFE1176A5B000A4BCAD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 52AB3DE81176A57F00A4BCAD /* USBPrivateDataSample.c */;
+		name = "USBPrivateDataSample.c: 168";
+		rLen = 33;
+		rLoc = 7787;
+		rType = 0;
+		vrLen = 1627;
+		vrLoc = 6975;
+	};
+	52AB3DFF1176A5B000A4BCAD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 08FB7796FE84155DC02AAC07 /* main.c */;
+		name = "main.c: 45";
+		rLen = 0;
+		rLoc = 1467;
+		rType = 0;
+		vrLen = 984;
+		vrLoc = 1138;
+	};
+	52AB3E021176A5C600A4BCAD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 08FB7796FE84155DC02AAC07 /* main.c */;
+		name = "main.c: 45";
+		rLen = 0;
+		rLoc = 1467;
+		rType = 0;
+		vrLen = 1031;
+		vrLoc = 1176;
+	};
+	52AB3E031176A5DA00A4BCAD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 52AB3DE61176A57F00A4BCAD /* IOCFPlugIn.h */;
+		name = "IOCFPlugIn.h: 61";
+		rLen = 56;
+		rLoc = 1984;
+		rType = 0;
+		vrLen = 1007;
+		vrLoc = 1294;
+	};
+	52AB3E041176A5DA00A4BCAD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 08FB7796FE84155DC02AAC07 /* main.c */;
+		name = "main.c: 45";
+		rLen = 6;
+		rLoc = 1461;
+		rType = 0;
+		vrLen = 971;
+		vrLoc = 867;
+	};
+	52AB3E051176A5DA00A4BCAD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 08FB7796FE84155DC02AAC07 /* main.c */;
+		name = "main.c: 44";
+		rLen = 0;
+		rLoc = 1334;
+		rType = 0;
+		vrLen = 978;
+		vrLoc = 865;
+	};
+	52AB3E061176A5F900A4BCAD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 52AB3DE21176A57F00A4BCAD /* USBSpec.h */;
+		name = "USBSpec.h: 456";
+		rLen = 17;
+		rLoc = 14789;
+		rType = 0;
+		vrLen = 1449;
+		vrLoc = 13691;
+	};
+	52AB3E071176A5F900A4BCAD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 08FB7796FE84155DC02AAC07 /* main.c */;
+		name = "main.c: 44";
+		rLen = 0;
+		rLoc = 1334;
+		rType = 0;
+		vrLen = 1042;
+		vrLoc = 134;
+	};
+	52AB3E081176A5F900A4BCAD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 08FB7796FE84155DC02AAC07 /* main.c */;
+		name = "main.c: 44";
+		rLen = 0;
+		rLoc = 1334;
+		rType = 0;
+		vrLen = 1042;
+		vrLoc = 134;
+	};
+	52AB3E0D1176A6BD00A4BCAD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 08FB7796FE84155DC02AAC07 /* main.c */;
+		name = "main.c: 78";
+		rLen = 0;
+		rLoc = 4010;
+		rType = 0;
+		vrLen = 930;
+		vrLoc = 1746;
+	};
+	52AB3E101176A96700A4BCAD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 52AB3DEA1176A57F00A4BCAD /* IOUSBLib.h */;
+		name = "IOUSBLib.h: 986";
+		rLen = 13;
+		rLoc = 45259;
+		rType = 0;
+		vrLen = 1980;
+		vrLoc = 44639;
+	};
+	52AB3E111176A96700A4BCAD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 08FB7796FE84155DC02AAC07 /* main.c */;
+		name = "main.c: 82";
+		rLen = 0;
+		rLoc = 4199;
+		rType = 0;
+		vrLen = 919;
+		vrLoc = 1774;
+	};
+	52AB3E121176A96700A4BCAD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 08FB7796FE84155DC02AAC07 /* main.c */;
+		name = "main.c: 60";
+		rLen = 0;
+		rLoc = 2094;
+		rType = 0;
+		vrLen = 1213;
+		vrLoc = 1196;
+	};
+	52AB3E1B1176AB9F00A4BCAD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 52AB3DE81176A57F00A4BCAD /* USBPrivateDataSample.c */;
+		name = "USBPrivateDataSample.c: 168";
+		rLen = 33;
+		rLoc = 7787;
+		rType = 0;
+		vrLen = 1327;
+		vrLoc = 4119;
+	};
+	52AB3E1C1176AB9F00A4BCAD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 52AB3DEA1176A57F00A4BCAD /* IOUSBLib.h */;
+		name = "IOUSBLib.h: 986";
+		rLen = 13;
+		rLoc = 45259;
+		rType = 0;
+		vrLen = 1918;
+		vrLoc = 44484;
+	};
+	52AB3E1D1176AB9F00A4BCAD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 08FB7796FE84155DC02AAC07 /* main.c */;
+		name = "main.c: 61";
+		rLen = 0;
+		rLoc = 1928;
+		rType = 0;
+		vrLen = 1073;
+		vrLoc = 1176;
+	};
+	52AB3E1E1176AB9F00A4BCAD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 08FB7796FE84155DC02AAC07 /* main.c */;
+		name = "main.c: 69";
+		rLen = 0;
+		rLoc = 2247;
+		rType = 0;
+		vrLen = 1056;
+		vrLoc = 1792;
+	};
+	52AB3E1F1176B5C500A4BCAD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 08FB7796FE84155DC02AAC07 /* main.c */;
+		name = "main.c: 85";
+		rLen = 0;
+		rLoc = 3161;
+		rType = 0;
+		vrLen = 977;
+		vrLoc = 1984;
+	};
+	52AB3E221176B66000A4BCAD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 08FB7796FE84155DC02AAC07 /* main.c */;
+		name = "main.c: 88";
+		rLen = 0;
+		rLoc = 3161;
+		rType = 0;
+		vrLen = 955;
+		vrLoc = 2303;
+	};
+	52AB3E231176B69500A4BCAD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 08FB7796FE84155DC02AAC07 /* main.c */;
+		name = "main.c: 95";
+		rLen = 0;
+		rLoc = 3359;
+		rType = 0;
+		vrLen = 875;
+		vrLoc = 2468;
+	};
+	52AB3E241176B6D900A4BCAD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 08FB7796FE84155DC02AAC07 /* main.c */;
+		name = "main.c: 97";
+		rLen = 0;
+		rLoc = 3356;
+		rType = 0;
+		vrLen = 829;
+		vrLoc = 2624;
+	};
+	52AB3E351176B96F00A4BCAD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 52AB3DE01176A57F00A4BCAD /* USB.h */;
+		name = "USB.h: 686";
+		rLen = 214;
+		rLoc = 30296;
+		rType = 0;
+		vrLen = 1490;
+		vrLoc = 29780;
+	};
+	52AB3E361176B96F00A4BCAD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 52AB3DEA1176A57F00A4BCAD /* IOUSBLib.h */;
+		name = "IOUSBLib.h: 934";
+		rLen = 16;
+		rLoc = 42314;
+		rType = 0;
+		vrLen = 1971;
+		vrLoc = 41620;
+	};
+	52AB3E371176B96F00A4BCAD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 08FB7796FE84155DC02AAC07 /* main.c */;
+		name = "main.c: 116";
+		rLen = 13;
+		rLoc = 3805;
+		rType = 0;
+		vrLen = 782;
+		vrLoc = 3196;
+	};
+	52AB3E381176B96F00A4BCAD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 08FB7796FE84155DC02AAC07 /* main.c */;
+		name = "main.c: 120";
+		rLen = 0;
+		rLoc = 3909;
+		rType = 0;
+		vrLen = 764;
+		vrLoc = 3265;
+	};
+	52AB3E431176BA8800A4BCAD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 08FB7796FE84155DC02AAC07 /* main.c */;
+		name = "main.c: 68";
+		rLen = 0;
+		rLoc = 2097;
+		rType = 0;
+		vrLen = 1149;
+		vrLoc = 1535;
+	};
+	52AB3E4C1176BACF00A4BCAD /* XCBuildMessageTextBookmark */ = {
+		isa = PBXTextBookmark;
+		comments = "A 64 bit integer is used to initialize a CFNumber object that represents a 32 bit integer. 32 bits of the input integer will be lost";
+		fRef = 08FB7796FE84155DC02AAC07 /* main.c */;
+		fallbackIsa = XCBuildMessageTextBookmark;
+		rLen = 1;
+		rLoc = 29;
+		rType = 1;
+	};
+	52AB3E4D1176BACF00A4BCAD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 08FB7796FE84155DC02AAC07 /* main.c */;
+		name = "main.c: 30";
+		rLen = 0;
+		rLoc = 884;
+		rType = 0;
+		vrLen = 237;
+		vrLoc = 708;
+	};
+	52AB3E561176BAF800A4BCAD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 52AB3DE81176A57F00A4BCAD /* USBPrivateDataSample.c */;
+		name = "USBPrivateDataSample.c: 168";
+		rLen = 33;
+		rLoc = 7787;
+		rType = 0;
+		vrLen = 1764;
+		vrLoc = 7502;
+	};
+	52AB3E571176BAF800A4BCAD /* XCBuildMessageTextBookmark */ = {
+		isa = PBXTextBookmark;
+		comments = "A 64 bit integer is used to initialize a CFNumber object that represents a 32 bit integer. 32 bits of the input integer will be lost";
+		fRef = 08FB7796FE84155DC02AAC07 /* main.c */;
+		fallbackIsa = XCBuildMessageTextBookmark;
+		rLen = 1;
+		rLoc = 29;
+		rType = 1;
+	};
+	52AB3E581176BAF800A4BCAD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 08FB7796FE84155DC02AAC07 /* main.c */;
+		name = "main.c: 136";
+		rLen = 0;
+		rLoc = 4164;
+		rType = 0;
+		vrLen = 774;
+		vrLoc = 3490;
+	};
+	52AB3E5B1176BB1200A4BCAD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 08FB7796FE84155DC02AAC07 /* main.c */;
+		name = "main.c: 136";
+		rLen = 0;
+		rLoc = 4164;
+		rType = 0;
+		vrLen = 773;
+		vrLoc = 3490;
+	};
+	8DD76F740486A8DE00D96B5E /* ibootutil */ = {
+		activeExec = 0;
+		executables = (
+			52AB3DA5117698B400A4BCAD /* ibootutil */,
+		);
+	};
+}
