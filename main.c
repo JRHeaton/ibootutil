@@ -5,6 +5,7 @@
 #include <IOKit/usb/IOUSBLib.h>
 #include <IOKit/IOCFPlugIn.h>
 #include <sys/stat.h>
+#include <readline/readline.h>
 
 #define RECOVERY 0x1281
 #define DFU 0x1227
@@ -92,13 +93,13 @@ iBootUSBConnection iDevice_open(uint32_t productID) {
 void iDevice_close(iBootUSBConnection connection) {
 	if(connection != NULL) {
 		printf("Closing connection...\n");
-		if(connection->usbService) IOObjectRelease(connection->usbService);
-		if(connection->deviceHandle) (*connection->deviceHandle)->USBDeviceClose(connection->deviceHandle);
-		if(connection->deviceHandle) (*connection->deviceHandle)->Release(connection->deviceHandle);
-		if(connection->name) CFRelease(connection->name);
-		if(connection->serial) CFRelease(connection->serial);
-		
-		free(connection);
+//		if(connection->usbService) IOObjectRelease(connection->usbService);
+//		if(connection->deviceHandle) (*connection->deviceHandle)->USBDeviceClose(connection->deviceHandle);
+//		if(connection->deviceHandle) (*connection->deviceHandle)->Release(connection->deviceHandle);
+//		if(connection->name) CFRelease(connection->name);
+//		if(connection->serial) CFRelease(connection->serial);
+//		
+//		free(connection);
 	}
 }
 
@@ -125,6 +126,14 @@ int iDevice_send_command(iBootUSBConnection connection, const char *command) {
 	request.wLenDone = 0x0;
 	
 	if((*connection->deviceHandle)->DeviceRequest(connection->deviceHandle, &request) != kIOReturnSuccess) {
+		if(strcmp(command, "reboot") != 0) 
+			printf("Error sending command\n");
+		else {
+			printf("Rebooting device...\n");
+			iDevice_close(connection);
+			exit(0);
+		}
+
 		return -1;
 	} 
 	
@@ -242,83 +251,8 @@ int iDevice_send_file(iBootUSBConnection connection, const char *path) {
 	}
 	
 	free(buf);
+	printf("Sent file %s\n", path);
 	
-	return 0;
-}
-
-int iDevice_start_shell(iBootUSBConnection connection, const char *prompt) {
-	if(connection == NULL)
-		return -1;
-	
-	UInt32 buf_size = 0x1000;
-	unsigned char response_buf[buf_size];
-	
-	if((*connection->deviceHandle)->SetConfiguration(connection->deviceHandle, 0x1) != 0) {
-		printf("Couldn't set device configuration\n");
-		return -1;
-	}
-	
-	IOUSBFindInterfaceRequest request;
-	request.bInterfaceClass = kIOUSBFindInterfaceDontCare;
-	request.bInterfaceSubClass = kIOUSBFindInterfaceDontCare;
-	request.bInterfaceProtocol = kIOUSBFindInterfaceDontCare;
-	request.bAlternateSetting = kIOUSBFindInterfaceDontCare;
-	
-	io_iterator_t iterator;
-	
-	if((*connection->deviceHandle)->CreateInterfaceIterator(connection->deviceHandle, &request, &iterator) != 0) {
-		printf("Couldn't create device interface iterator\n");
-		return -1;
-	}
-	
-	IOUSBInterfaceInterface **deviceInterface;
-	
-	io_service_t interface;
-	while(interface = IOIteratorNext(iterator)) {
-		IOCFPlugInInterface **pluginInterface;
-		SInt32 score;
-		if(IOCreatePlugInInterfaceForService(interface, kIOUSBInterfaceUserClientTypeID, kIOCFPlugInInterfaceID, &pluginInterface, &score) != 0) {
-			printf("Couldn't create plugin interface for device\n");
-			IOObjectRelease(interface);
-			IOObjectRelease(iterator);
-			return -1;
-		}
-		
-		if((*pluginInterface)->QueryInterface(pluginInterface, CFUUIDGetUUIDBytes(kIOUSBInterfaceInterfaceID), (LPVOID)&deviceInterface) != 0) {
-			printf("Couldn't retreive device interface\n");
-			IOObjectRelease(interface);
-			IOObjectRelease(iterator);
-			return -1;
-		}
-		
-		(*pluginInterface)->Release(pluginInterface);
-		IOObjectRelease(interface);
-		break;
-	}
-	IOObjectRelease(iterator);
-	
-	if((*deviceInterface)->USBInterfaceOpen(deviceInterface) != 0) {
-		printf("Couldn't claim device interface\n");
-		return -1;
-	}
-	
-	if((*deviceInterface)->SetAlternateInterface(deviceInterface, 0x1) != 0) {
-		printf("Couldn't set device alternate interface\n");
-		return -1;
-	}
-	
-	while(1) {
-		memset(response_buf, '\0', buf_size);
-		if((*deviceInterface)->ReadPipe(connection->deviceHandle, RESPONSE_PIPE, response_buf, &buf_size) != 0) {
-			printf("Error reading response\n");
-		}
-		
-		printf("%s\n", response_buf);
-	}
-	
-	(*deviceInterface)->USBInterfaceClose(deviceInterface);
-	(*deviceInterface)->Release(deviceInterface);
-	   
 	return 0;
 }
 
@@ -329,6 +263,32 @@ void iDevice_reset(iBootUSBConnection connection) {
 	(*connection->deviceHandle)->ResetDevice(connection->deviceHandle);
 	iDevice_close(connection);
 	exit(0);
+}
+
+int iDevice_start_shell(iBootUSBConnection connection, const char *prompt) {
+	if(connection == NULL)
+		return -1;
+
+	const char *input;
+	do {
+		input = readline(prompt);
+		if(input[0] == '/') {
+			if(strcmp(input, "/exit") == 0) {
+				iDevice_close(connection);
+				exit(0);
+			} else if (strcmp(input, "/reset") == 0) {
+				iDevice_reset(connection);
+				exit(0);
+			} else if(strstr(input, "/sendfile") != NULL) {
+				const char *file = (const char *)&input[strlen("/sendfile")+1];
+				iDevice_send_file(connection, file);
+			}
+		} else {
+			iDevice_send_command(connection, input);
+		}
+	} while(1);
+	
+	return 0;
 }
 
 int main (int argc, const char **argv) {
