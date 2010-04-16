@@ -302,7 +302,7 @@ void usage() {
 	printf("\t-c <command>\tSend a single command\n");
 	printf("\t-f <file>\tSend a file\n");
 	printf("\t-s <script>\trun script at specified path\n");
-	printf("\t-a <addr>\tSpecify idProduct value manually\n");
+	printf("\t-a <idProduct>\tSpecify idProduct value manually\n");
 	printf("\t-r\t\tReset the usb connection\n");
 	printf("\t-p\t\tOpen a shell with iBoot\n\n");
 	
