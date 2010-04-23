@@ -1,7 +1,7 @@
 Tibootutil
 v7
 r0
-t293073836.567566
+t293675675.670087
 cCheck dependencies
 cCompileC build/ibootutil.build/Debug/ibootutil.build/Objects-normal/x86_64/main.o /Users/John/Desktop/ibootutil/main.c normal x86_64 c com.apple.compilers.gcc.4_2
 cLd /Users/John/Desktop/ibootutil/build/Debug/ibootutil normal x86_64
@@ -67,8 +67,8 @@ t1265866276
 s7852016
 
 N/Users/John/Desktop/ibootutil/build/Debug/ibootutil
-t1271381036
-s20432
+t1271982875
+s20656
 
 N/Users/John/Desktop/ibootutil/build/ibootutil.build/Debug/ibootutil.build/Objects-normal/x86_64/ibootutil.LinkFileList
 c000000004BC6673F0000000000000067
@@ -76,17 +76,17 @@ t1271293759
 s103
 
 N/Users/John/Desktop/ibootutil/build/ibootutil.build/Debug/ibootutil.build/Objects-normal/x86_64/main.o
-t1271381035
-s26924
+t1271982864
+s30628
 
 N/Users/John/Desktop/ibootutil/build/ibootutil.build/Debug/ibootutil.build/StaticAnalyzer/normal/x86_64/main.plist
 t1271365478
 s11257
 
 N/Users/John/Desktop/ibootutil/main.c
-c000000004BC7BC2B0000000000002BAE
-t1271381035
-s11182
+c000000004BD0EB1B0000000000003966
+t1271982875
+s14694
 i<CoreFoundation/CoreFoundation.h>
 i<IOKit/IOKitLib.h>
 i<IOKit/usb/USB.h>
@@ -111,11 +111,11 @@ lSLF07#2@44"Analyze /Users/John/Desktop/ibootutil/main.c293058278#293058278#0(20
 
 CCheck dependencies
 r0
-lSLF07#2@18"Check dependencies293073836#293073836#0(0"0(0#1#0"4300911832#0"0#
+lSLF07#2@18"Check dependencies293675675#293675675#0(0"0(0#1#0"4300911832#0"0#
 
 CCompileC build/ibootutil.build/Debug/ibootutil.build/Objects-normal/x86_64/main.o /Users/John/Desktop/ibootutil/main.c normal x86_64 c com.apple.compilers.gcc.4_2
-s293073836.545383
-e293073836.546483
+s293675675.645682
+e293675675.646857
 r1
 xCompileC
 xbuild/ibootutil.build/Debug/ibootutil.build/Objects-normal/x86_64/main.o
@@ -124,15 +124,15 @@ xnormal
 xx86_64
 xc
 xcom.apple.compilers.gcc.4_2
-lSLF07#2@44"Compile /Users/John/Desktop/ibootutil/main.c293073836#293073836#0(0"0(0#0#36"/Users/John/Desktop/ibootutil/main.c4300911832#1207"    cd /Users/John/Desktop/ibootutil    setenv LANG en_US.US-ASCII    /Developer/usr/bin/gcc-4.2 -x c -arch x86_64 -fmessage-length=0 -pipe -std=gnu99 -Wno-trigraphs -fpascal-strings -fasm-blocks -O0 -Wreturn-type -Wunused-variable -isysroot /Developer/SDKs/MacOSX10.6.sdk -mfix-and-continue -mmacosx-version-min=10.6 -gdwarf-2 -iquote /Users/John/Desktop/ibootutil/build/ibootutil.build/Debug/ibootutil.build/ibootutil-generated-files.hmap -I/Users/John/Desktop/ibootutil/build/ibootutil.build/Debug/ibootutil.build/ibootutil-own-target-headers.hmap -I/Users/John/Desktop/ibootutil/build/ibootutil.build/Debug/ibootutil.build/ibootutil-all-target-headers.hmap -iquote /Users/John/Desktop/ibootutil/build/ibootutil.build/Debug/ibootutil.build/ibootutil-project-headers.hmap -F/Users/John/Desktop/ibootutil/build/Debug -I/Users/John/Desktop/ibootutil/build/Debug/include -I/Users/John/Desktop/ibootutil/build/ibootutil.build/Debug/ibootutil.build/DerivedSources/x86_64 -I/Users/John/Desktop/ibootutil/build/ibootutil.build/Debug/ibootutil.build/DerivedSources -c /Users/John/Desktop/ibootutil/main.c -o /Users/John/Desktop/ibootutil/build/ibootutil.build/Debug/ibootutil.build/Objects-normal/x86_64/main.o0#
+lSLF07#2@44"Compile /Users/John/Desktop/ibootutil/main.c293675675#293675675#0(0"0(0#0#36"/Users/John/Desktop/ibootutil/main.c4300911832#1207"    cd /Users/John/Desktop/ibootutil    setenv LANG en_US.US-ASCII    /Developer/usr/bin/gcc-4.2 -x c -arch x86_64 -fmessage-length=0 -pipe -std=gnu99 -Wno-trigraphs -fpascal-strings -fasm-blocks -O0 -Wreturn-type -Wunused-variable -isysroot /Developer/SDKs/MacOSX10.6.sdk -mfix-and-continue -mmacosx-version-min=10.6 -gdwarf-2 -iquote /Users/John/Desktop/ibootutil/build/ibootutil.build/Debug/ibootutil.build/ibootutil-generated-files.hmap -I/Users/John/Desktop/ibootutil/build/ibootutil.build/Debug/ibootutil.build/ibootutil-own-target-headers.hmap -I/Users/John/Desktop/ibootutil/build/ibootutil.build/Debug/ibootutil.build/ibootutil-all-target-headers.hmap -iquote /Users/John/Desktop/ibootutil/build/ibootutil.build/Debug/ibootutil.build/ibootutil-project-headers.hmap -F/Users/John/Desktop/ibootutil/build/Debug -I/Users/John/Desktop/ibootutil/build/Debug/include -I/Users/John/Desktop/ibootutil/build/ibootutil.build/Debug/ibootutil.build/DerivedSources/x86_64 -I/Users/John/Desktop/ibootutil/build/ibootutil.build/Debug/ibootutil.build/DerivedSources -c /Users/John/Desktop/ibootutil/main.c -o /Users/John/Desktop/ibootutil/build/ibootutil.build/Debug/ibootutil.build/Objects-normal/x86_64/main.o0#
 
 CLd /Users/John/Desktop/ibootutil/build/Debug/ibootutil normal x86_64
-s293073836.546549
-e293073836.567507
+s293675675.646924
+e293675675.670038
 r1
 xLd
 x/Users/John/Desktop/ibootutil/build/Debug/ibootutil
 xnormal
 xx86_64
-lSLF07#2@56"Link /Users/John/Desktop/ibootutil/build/Debug/ibootutil293073836#293073836#0(0"0(0#0#0"4300911832#515"    cd /Users/John/Desktop/ibootutil    setenv MACOSX_DEPLOYMENT_TARGET 10.6    /Developer/usr/bin/gcc-4.2 -arch x86_64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -L/Users/John/Desktop/ibootutil/build/Debug -F/Users/John/Desktop/ibootutil/build/Debug -filelist /Users/John/Desktop/ibootutil/build/ibootutil.build/Debug/ibootutil.build/Objects-normal/x86_64/ibootutil.LinkFileList -mmacosx-version-min=10.6 -lreadline -framework CoreFoundation -framework IOKit -o /Users/John/Desktop/ibootutil/build/Debug/ibootutil0#
+lSLF07#2@56"Link /Users/John/Desktop/ibootutil/build/Debug/ibootutil293675675#293675675#0(0"0(0#0#0"4300911832#515"    cd /Users/John/Desktop/ibootutil    setenv MACOSX_DEPLOYMENT_TARGET 10.6    /Developer/usr/bin/gcc-4.2 -arch x86_64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -L/Users/John/Desktop/ibootutil/build/Debug -F/Users/John/Desktop/ibootutil/build/Debug -filelist /Users/John/Desktop/ibootutil/build/ibootutil.build/Debug/ibootutil.build/Objects-normal/x86_64/ibootutil.LinkFileList -mmacosx-version-min=10.6 -lreadline -framework CoreFoundation -framework IOKit -o /Users/John/Desktop/ibootutil/build/Debug/ibootutil0#
 

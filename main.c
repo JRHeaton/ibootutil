@@ -14,13 +14,12 @@
 #define REQUEST_COMMAND 0x40
 #define REQUEST_FILE 0x21
 #define REQUEST_STATUS 0xA1
-#define RESPONSE_PIPE 0x81
 
 struct iBootUSBConnection {
 	io_service_t usbService;
 	IOUSBDeviceInterface **deviceHandle;
 	CFStringRef name, serial;
-	unsigned int idProduct;
+	unsigned int idProduct, open;
 };
 typedef struct iBootUSBConnection *iBootUSBConnection;
 
@@ -91,6 +90,7 @@ iBootUSBConnection iDevice_open(uint32_t productID) {
 	connection->name = productName;
 	connection->serial = productSerial;
 	connection->idProduct = productID;
+	connection->open = 1;
 	
 	iDevice_print(connection);
 	
@@ -99,11 +99,12 @@ iBootUSBConnection iDevice_open(uint32_t productID) {
 
 void iDevice_close(iBootUSBConnection connection) {
 	if(connection != NULL) {
-		if(connection->usbService) IOObjectRelease(connection->usbService);
-		if(connection->deviceHandle) (*connection->deviceHandle)->USBDeviceClose(connection->deviceHandle);
-		if(connection->deviceHandle) (*connection->deviceHandle)->Release(connection->deviceHandle);
-		if(connection->name) CFRelease(connection->name);
-		if(connection->serial) CFRelease(connection->serial);
+//		if(connection->usbService) IOObjectRelease(connection->usbService);
+//		if(connection->deviceHandle) (*connection->deviceHandle)->USBDeviceClose(connection->deviceHandle);
+//		if(connection->deviceHandle) (*connection->deviceHandle)->Release(connection->deviceHandle);
+//		//if(connection->name) CFRelease(connection->name);
+//		if(connection->serial) CFRelease(connection->serial);
+//		connection->open = 0;
 		
 		free(connection);
 	}
@@ -259,7 +260,6 @@ void iDevice_reset(iBootUSBConnection connection) {
 	
 	(*connection->deviceHandle)->ResetDevice(connection->deviceHandle);
 	iDevice_close(connection);
-	exit(0);
 }
 
 int iDevice_start_shell(iBootUSBConnection connection, const char *prompt) {
@@ -289,22 +289,165 @@ int iDevice_start_shell(iBootUSBConnection connection, const char *prompt) {
 }
 
 int iDevice_run_script(const char *path) {
+	FILE *file = fopen(path, "r");
+	if(file == NULL) {
+		printf("Couldn't open script file\n");
+		return -1;
+	}
+	
+	struct stat check;
+	if(stat(path, &check) != 0) {
+		fclose(file);
+		return -1;
+	}
+	
+	iBootUSBConnection connection;
+	int cmd=0;
+	
+	char read_buf[check.st_size];
+	int index=1;
+	while(fgets(read_buf, sizeof(read_buf), file) != NULL) {
+		if(read_buf[0] == '#') {
+			char *line = (read_buf+1);
+			const char *element = strtok(line, " ");
+			if(element == NULL) 
+				continue;
+			
+			int action=0, idProduct=0;
+			
+			if(strcmp(element, "connect") == 0) {
+				action = 0xC; // connect
+			} else if(strcmp(element, "disconnect") == 0) {
+				action = 0xD; // disconnect
+			} else {
+				action = 0xA; // unknown
+			}
+			
+			// bail out if unknown
+			if(action == 0xA) {
+				printf("Error: Line %d - Unknown action: %s\n", index, element);
+				fclose(file);
+				return -1;
+			}
+			
+			char *cmdstr=NULL, *idProductstr=NULL;
+			
+			while((element = strtok(NULL, " ")) != NULL) {
+				if(strstr(element, "cmd") != NULL) {
+					cmdstr = (char *)element;
+				}
+				if(strstr(element, "idProduct") != NULL) {
+					idProductstr = (char *)element;
+				}
+			}
+				
+			if(idProductstr != NULL) {
+				const char *param = strtok((char *)idProductstr, "=");
+				const char *value = strtok(NULL, "=");
+				if(value == NULL) {
+					printf("Error: Line %d - No value specified for parameter \"%s\"\n", index, param);
+					fclose(file);
+					return -1;
+				}
+					
+				if(strstr(value, "0x") == NULL) {
+					printf("Error: Line %d - No value/wrong format for parameter \"%s\"\n", index, param);
+					fclose(file);
+					return -1;
+				} else {
+					idProduct = strtol(value, NULL, 0x10);
+				}
+			}
+			if(cmdstr != NULL) {
+				const char *param = strtok((char *)cmdstr, "=");
+				const char *value = strtok(NULL, "=");
+				if(value == NULL) {
+					printf("Error: Line %d - No value specified for parameter \"%s\"\n", index, param);
+					fclose(file);
+					return -1;
+				}
+				
+				if(strcmp(value, "0") == 0) {
+					cmd = 0;
+				} else {
+					cmd = 1;
+				}
+			}
+		
+			if(action == 0xC) {
+				while(connection == NULL) {
+					connection = iDevice_open(idProduct);
+				}
+			} else if(action == 0xD) {
+				iDevice_close(connection);
+			}
+		} else if(read_buf[0] == '!') {
+			const char *line = (read_buf+1);
+			const char *path = strtok((char *)line, " ");
+			if(file == NULL) {
+				printf("Error: Line %d - No file specified to upload\n", index);
+				fclose(file);
+				return -1;
+			}
+			
+			if(connection == NULL) {
+				printf("Not connected to device\n");
+				fclose(file);
+				return -1;
+			}
+			
+			if(iDevice_send_file(connection, path) != 0) {
+				printf("Error sending file\n");
+				fclose(file);
+				return -1;
+			}
+			
+			char *reset=NULL;
+			if((reset = strtok(NULL, " ")) != NULL) {
+				if(strstr(reset, "reset") != NULL) {
+					strtok(reset, "=");
+					char *value = strtok(NULL, "=");
+					if(value == NULL) {
+						printf("Error: Line %d - No value specified for reset parameter\n", index);
+						fclose(file);
+						return -1;
+					}
+					
+					if(strcmp(value, "0") != 0) {
+						iDevice_reset(connection);
+					}
+				}
+			}
+		} else {
+			if(cmd != 0) {
+				if(iDevice_send_command(connection, read_buf) != 0) {
+					fclose(file);
+					return -1;
+				}
+			} else {
+				printf("Error: command sending not enabled in current mode\n");
+				fclose(file);
+				return -1;
+			}
+		}
+		
+		++index;
+	}
 	
 	return 0;
 }
 
 void usage() {
-	printf("ibootutil - iPhone USB communication tool\n");
-	printf("by Gojohnnyboi\n\n");
 	printf("Usage: ibootutil <args>\n\n");
 	
 	printf("Options:\n");
 	printf("\t-c <command>\tSend a single command\n");
 	printf("\t-f <file>\tSend a file\n");
-	printf("\t-s <script>\trun script at specified path\n");
-	printf("\t-a <idProduct>\tSpecify idProduct value manually\n");
+	printf("\t-p <script>\trun script at specified path\n");
+	printf("\t-l <file>\trun commands by line in specified file\n");
+	printf("\t-a <idProduct>\tSpecify idProduct value manually\n\n");
 	printf("\t-r\t\tReset the usb connection\n");
-	printf("\t-p\t\tOpen a shell with iBoot\n\n");
+	printf("\t-s\t\tOpen a shell with iBoot\n\n");
 	
 	exit(0);
 }
@@ -313,6 +456,8 @@ int main (int argc, const char **argv) {
 	if(argc < 2)
 		usage();
 	
+	printf("ibootutil - iPhone USB communication tool\n");
+	printf("by Gojohnnyboi\n\n");
 	iBootUSBConnection connection;
 	
 	int i, productID=0, command=0, reset=0, file=0, script=0, shell=0;
@@ -336,13 +481,13 @@ int main (int argc, const char **argv) {
 				exit(1);
 			}
 			file=(i+1);
-		} else if(strcmp(argv[i], "-s") == 0) {
+		} else if(strcmp(argv[i], "-p") == 0) {
 			if(argv[i+1] == NULL) {
-				printf("-s requires that you provide a script path\n");
+				printf("-p requires that you provide a script path\n");
 				exit(1);
 			}
 			script=(i+1);
-		} else if(strcmp(argv[i], "-p") == 0) {
+		} else if(strcmp(argv[i], "-s") == 0) {
 				shell=1;
 		} else if(strcmp(argv[i], "-r") == 0) {
 			reset=1;
@@ -401,9 +546,10 @@ int main (int argc, const char **argv) {
 			exit(1);
 		}
 		
-		if(reset)
+		if(reset) {
 			iDevice_reset(connection);
-		else
+			exit(0);
+		} else
 			iDevice_close(connection);
 		
 		exit(0);
