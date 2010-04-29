@@ -75,13 +75,10 @@ iBootUSBConnection iDevice_open(uint32_t productID) {
 		(*deviceHandle)->Release(deviceHandle);
 		return NULL;
 	}
-	
-	CFMutableDictionaryRef properties;
-	IORegistryEntryCreateCFProperties(service, &properties, kCFAllocatorDefault, 0);
-	CFStringRef productName = CFDictionaryGetValue(properties, CFSTR(kUSBProductString));
-	CFStringRef productSerial = CFDictionaryGetValue(properties, CFSTR(kUSBSerialNumberString));
-	CFRelease(properties);
-	
+
+	CFStringRef productName = IORegistryEntryCreateCFProperty(service, CFSTR(kUSBProductString), kCFAllocatorDefault, 0);
+	CFStringRef productSerial = IORegistryEntryCreateCFProperty(service, CFSTR(kUSBSerialNumberString), kCFAllocatorDefault, 0);
+
 	iBootUSBConnection connection = malloc(sizeof(struct iBootUSBConnection));
 	memset(connection, '\0', sizeof(struct iBootUSBConnection));
 
@@ -99,12 +96,12 @@ iBootUSBConnection iDevice_open(uint32_t productID) {
 
 void iDevice_close(iBootUSBConnection connection) {
 	if(connection != NULL) {
-//		if(connection->usbService) IOObjectRelease(connection->usbService);
-//		if(connection->deviceHandle) (*connection->deviceHandle)->USBDeviceClose(connection->deviceHandle);
-//		if(connection->deviceHandle) (*connection->deviceHandle)->Release(connection->deviceHandle);
-//		//if(connection->name) CFRelease(connection->name);
-//		if(connection->serial) CFRelease(connection->serial);
-//		connection->open = 0;
+		if(connection->deviceHandle) (*connection->deviceHandle)->USBDeviceClose(connection->deviceHandle);
+		if(connection->deviceHandle) (*connection->deviceHandle)->Release(connection->deviceHandle);
+		if(connection->name) CFRelease(connection->name);
+		if(connection->serial) CFRelease(connection->serial);
+		if(connection->usbService) IOObjectRelease(connection->usbService);
+		connection->open = 0;
 		
 		free(connection);
 	}
@@ -288,162 +285,12 @@ int iDevice_start_shell(iBootUSBConnection connection, const char *prompt) {
 	return 0;
 }
 
-int iDevice_run_script(const char *path) {
-	FILE *file = fopen(path, "r");
-	if(file == NULL) {
-		printf("Couldn't open script file\n");
-		return -1;
-	}
-	
-	struct stat check;
-	if(stat(path, &check) != 0) {
-		fclose(file);
-		return -1;
-	}
-	
-	iBootUSBConnection connection;
-	int cmd=0;
-	
-	char read_buf[check.st_size];
-	int index=1;
-	while(fgets(read_buf, sizeof(read_buf), file) != NULL) {
-		if(read_buf[0] == '#') {
-			char *line = (read_buf+1);
-			const char *element = strtok(line, " ");
-			if(element == NULL) 
-				continue;
-			
-			int action=0, idProduct=0;
-			
-			if(strcmp(element, "connect") == 0) {
-				action = 0xC; // connect
-			} else if(strcmp(element, "disconnect") == 0) {
-				action = 0xD; // disconnect
-			} else {
-				action = 0xA; // unknown
-			}
-			
-			// bail out if unknown
-			if(action == 0xA) {
-				printf("Error: Line %d - Unknown action: %s\n", index, element);
-				fclose(file);
-				return -1;
-			}
-			
-			char *cmdstr=NULL, *idProductstr=NULL;
-			
-			while((element = strtok(NULL, " ")) != NULL) {
-				if(strstr(element, "cmd") != NULL) {
-					cmdstr = (char *)element;
-				}
-				if(strstr(element, "idProduct") != NULL) {
-					idProductstr = (char *)element;
-				}
-			}
-				
-			if(idProductstr != NULL) {
-				const char *param = strtok((char *)idProductstr, "=");
-				const char *value = strtok(NULL, "=");
-				if(value == NULL) {
-					printf("Error: Line %d - No value specified for parameter \"%s\"\n", index, param);
-					fclose(file);
-					return -1;
-				}
-					
-				if(strstr(value, "0x") == NULL) {
-					printf("Error: Line %d - No value/wrong format for parameter \"%s\"\n", index, param);
-					fclose(file);
-					return -1;
-				} else {
-					idProduct = strtol(value, NULL, 0x10);
-				}
-			}
-			if(cmdstr != NULL) {
-				const char *param = strtok((char *)cmdstr, "=");
-				const char *value = strtok(NULL, "=");
-				if(value == NULL) {
-					printf("Error: Line %d - No value specified for parameter \"%s\"\n", index, param);
-					fclose(file);
-					return -1;
-				}
-				
-				if(strcmp(value, "0") == 0) {
-					cmd = 0;
-				} else {
-					cmd = 1;
-				}
-			}
-		
-			if(action == 0xC) {
-				while(connection == NULL) {
-					connection = iDevice_open(idProduct);
-				}
-			} else if(action == 0xD) {
-				iDevice_close(connection);
-			}
-		} else if(read_buf[0] == '!') {
-			const char *line = (read_buf+1);
-			const char *path = strtok((char *)line, " ");
-			if(file == NULL) {
-				printf("Error: Line %d - No file specified to upload\n", index);
-				fclose(file);
-				return -1;
-			}
-			
-			if(connection == NULL) {
-				printf("Not connected to device\n");
-				fclose(file);
-				return -1;
-			}
-			
-			if(iDevice_send_file(connection, path) != 0) {
-				printf("Error sending file\n");
-				fclose(file);
-				return -1;
-			}
-			
-			char *reset=NULL;
-			if((reset = strtok(NULL, " ")) != NULL) {
-				if(strstr(reset, "reset") != NULL) {
-					strtok(reset, "=");
-					char *value = strtok(NULL, "=");
-					if(value == NULL) {
-						printf("Error: Line %d - No value specified for reset parameter\n", index);
-						fclose(file);
-						return -1;
-					}
-					
-					if(strcmp(value, "0") != 0) {
-						iDevice_reset(connection);
-					}
-				}
-			}
-		} else {
-			if(cmd != 0) {
-				if(iDevice_send_command(connection, read_buf) != 0) {
-					fclose(file);
-					return -1;
-				}
-			} else {
-				printf("Error: command sending not enabled in current mode\n");
-				fclose(file);
-				return -1;
-			}
-		}
-		
-		++index;
-	}
-	
-	return 0;
-}
-
 void usage() {
 	printf("Usage: ibootutil <args>\n\n");
 	
 	printf("Options:\n");
 	printf("\t-c <command>\tSend a single command\n");
 	printf("\t-f <file>\tSend a file\n");
-	printf("\t-p <script>\trun script at specified path\n");
 	printf("\t-l <file>\trun commands by line in specified file\n");
 	printf("\t-a <idProduct>\tSpecify idProduct value manually\n\n");
 	printf("\t-r\t\tReset the usb connection\n");
@@ -481,12 +328,6 @@ int main (int argc, const char **argv) {
 				exit(1);
 			}
 			file=(i+1);
-		} else if(strcmp(argv[i], "-p") == 0) {
-			if(argv[i+1] == NULL) {
-				printf("-p requires that you provide a script path\n");
-				exit(1);
-			}
-			script=(i+1);
 		} else if(strcmp(argv[i], "-s") == 0) {
 				shell=1;
 		} else if(strcmp(argv[i], "-r") == 0) {
@@ -555,20 +396,6 @@ int main (int argc, const char **argv) {
 		exit(0);
 	}
 	
-	if(script) {
-		if(command || file || shell) {
-			printf("You can only specify one of the -cfsp options\n");
-			exit(1);
-		}
-		
-		if(iDevice_run_script(argv[script]) != 0) {
-			printf("Couldn't run script\n");
-			exit(1);
-		}
-		
-		exit(0);
-	}
-	
 	if(shell) {
 		if(command || file || script) {
 			printf("You can only specify one of the -cfsp options\n");
@@ -577,7 +404,7 @@ int main (int argc, const char **argv) {
 		
 		if(!productID)
 			productID = RECOVERY;
-		
+
 		connection = iDevice_open(productID);
 		if(connection == NULL) {
 			printf("Couldn't open device @ 0x%x\n", productID);
