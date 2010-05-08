@@ -595,7 +595,7 @@ int main (int argc, const char **argv) {
 			exit(1);
 		}
 		
-		iDevice_usb_control_msg_exploit(connection, argv[file]);
+		iDevice_usb_control_msg_exploit(connection, argv[payload]);
 		
 		iDevice_close(connection);
 		exit(0);
