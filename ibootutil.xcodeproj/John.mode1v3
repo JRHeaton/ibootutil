@@ -229,6 +229,8 @@
 			<key>Layout</key>
 			<array>
 				<dict>
+					<key>BecomeActive</key>
+					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -272,7 +274,7 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>10</integer>
+									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
@@ -306,8 +308,6 @@
 					<key>Dock</key>
 					<array>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -325,22 +325,18 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>52150EE311893067004C8FE0</string>
+										<string>526971BE1194FD4600C48949</string>
 										<key>history</key>
 										<array>
-											<string>52AB3DEB1176A57F00A4BCAD</string>
 											<string>52AB3E061176A5F900A4BCAD</string>
 											<string>52AB3E561176BAF800A4BCAD</string>
-											<string>52D1E6FE1177AB9600E5C116</string>
 											<string>52D1E8121177B8D500E5C116</string>
 											<string>52D1E8141177B8D500E5C116</string>
 											<string>52D1E8161177B8D500E5C116</string>
 											<string>52D1E8181177B8D500E5C116</string>
 											<string>52D1E88D1177E5C100E5C116</string>
-											<string>523BCAF61178F5B5002BEB34</string>
 											<string>526C44F411810413001A9199</string>
-											<string>526C45011181049B001A9199</string>
-											<string>52150ED911892F94004C8FE0</string>
+											<string>526971BD1194FD4600C48949</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -398,9 +394,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>52150EB211892E05004C8FE0</string>
+				<string>526971831194FD0A00C48949</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>52150EB311892E05004C8FE0</string>
+				<string>526971841194FD0A00C48949</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -538,12 +534,8 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>52150EBC11892E05004C8FE0</string>
-		<string>52150EBD11892E05004C8FE0</string>
-		<string>1CD10A99069EF8BA00B06720</string>
 		<string>52AB3DB71176A0EC00A4BCAD</string>
-		<string>1C78EAAD065D492600B07095</string>
-		<string>/Users/John/Desktop/Code Projects/ibootutil/ibootutil.xcodeproj</string>
+		<string>/Users/John/Desktop/ibootutil/ibootutil.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
 	<string>0 59 1280 719 0 0 1280 778 </string>
@@ -584,6 +576,8 @@
 							<string>266pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -623,7 +617,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>52AB3DB71176A0EC00A4BCAD</string>
-				<string>52150EB411892E05004C8FE0</string>
+				<string>526971851194FD0A00C48949</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
