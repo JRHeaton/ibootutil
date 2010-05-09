@@ -15,7 +15,7 @@
 #define REQUEST_FILE 0x21
 #define REQUEST_STATUS 0xA1
 
-static int verbosity = 0;
+static int verbosity = 0, timeout=1000;
 #define ibootutil_printf(...) { \
 	if(verbosity != 0) \
 		printf(__VA_ARGS__); \
@@ -30,6 +30,7 @@ struct iBootUSBConnection {
 	unsigned int idProduct, open;
 };
 typedef struct iBootUSBConnection *iBootUSBConnection;
+
 
 void iDevice_print(iBootUSBConnection connection) {
 	if(connection != NULL && verbosity != 0) {
@@ -302,7 +303,7 @@ int iDevice_send_file(iBootUSBConnection connection, const char *path) {
 		file_request.wLenDone = 0x0;
 		
 		if((*connection->deviceHandle)->DeviceRequest(connection->deviceHandle, &file_request) != kIOReturnSuccess) {
-			printf("Error: couldn't send packet %d\n", current + 1);
+			ibootutil_printf("Error: couldn't send packet %d\n", current + 1);
 			free(buf);
 			return -1;
 		}
@@ -386,7 +387,7 @@ int iDevice_read_response(iBootUSBConnection connection) {
 	UInt32 buf_size = 0x800;
 	char *buf = calloc(1, buf_size);
 	
-	((IOUSBInterfaceInterface182 *)(*connection->interfaceHandle))->ReadPipeTO(connection->interfaceHandle, connection->responsePipeRef, buf, &buf_size, 500, 1000);
+	((IOUSBInterfaceInterface182 *)(*connection->interfaceHandle))->ReadPipeTO(connection->interfaceHandle, connection->responsePipeRef, buf, &buf_size, timeout, timeout);
 	for(int i=0;i<buf_size;++i) {
 		printf("%c", buf[i]);
 	}
@@ -416,13 +417,18 @@ int iDevice_start_shell(iBootUSBConnection connection, const char *prompt) {
 			if(strcmp(input, "/exit") == 0) {
 				iDevice_close(connection);
 				exit(0);
-			} else if (strcmp(input, "/reset") == 0) {
+			} else if(strcmp(input, "/reset") == 0) {
 				iDevice_reset(connection);
 				exit(0);
-			} else if(strstr(input, "/sendfile") != NULL) {
-				const char *file = (const char *)&input[strlen("/sendfile")+1];
+			} else if(strstr(input, "/send") != NULL) {
+				const char *file = (const char *)&input[strlen("/send")+1];
 				printf("sending file...\n");
 				iDevice_send_file(connection, file);
+				read_next_time = 0;
+			} else if(strstr(input, "/timeout") != NULL) {
+				int newtime = strtol(strstr(input, "/timeout")+strlen("/timeout")+1, NULL, 10);
+				timeout = newtime;
+				printf("New timeout: %d\n", timeout);
 				read_next_time = 0;
 			}
 		} else {
