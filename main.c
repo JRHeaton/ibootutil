@@ -384,12 +384,19 @@ int iDevice_usb_control_msg_exploit(iBootUSBConnection connection, const char *p
 }
 
 int iDevice_read_response(iBootUSBConnection connection) {
-	UInt32 buf_size = 0x800;
+	UInt32 buf_size = 0x2000;
 	char *buf = calloc(1, buf_size);
 	
-	((IOUSBInterfaceInterface182 *)(*connection->interfaceHandle))->ReadPipeTO(connection->interfaceHandle, connection->responsePipeRef, buf, &buf_size, timeout, timeout);
-	for(int i=0;i<buf_size;++i) {
-		printf("%c", buf[i]);
+	int got_end_byte_sequence = 0;
+	while(!got_end_byte_sequence) {
+		((IOUSBInterfaceInterface182 *)(*connection->interfaceHandle))->ReadPipeTO(connection->interfaceHandle, connection->responsePipeRef, buf, &buf_size, timeout, timeout);
+		
+		if(buf[0] == '\0') break;
+		for(int i=0;i<buf_size;++i) {
+			printf("%c", buf[i]);
+			if(buf[i] == '\0' && buf[i-1] == '\n') 
+				got_end_byte_sequence = 1;
+		}
 	}
 	
 	return 0;
